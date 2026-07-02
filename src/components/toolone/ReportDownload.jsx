@@ -83,11 +83,15 @@ const getRecommendation = (problem) => {
 };
 
 // ============================================
-// FILTERS
+// ✅ FILTERS - SAME AS PROBLEMSLIST (EXACT MATCH)
 // ============================================
-const filterOutPassItems = (problems) => {
+
+// ✅ Exact copy of ProblemsList filter
+const filterProblems = (problems) => {
   return problems.filter((p) => {
     const lower = p.toLowerCase();
+
+    // Remove summary messages
     if (
       lower.includes("excellent website performance") ||
       lower.includes("good performance with minor improvements") ||
@@ -100,6 +104,8 @@ const filterOutPassItems = (problems) => {
     ) {
       return false;
     }
+
+    // Remove Pass items (✅) - these are not issues
     if (
       lower.includes("✅") ||
       (lower.includes("valid") && lower.includes("ssl")) ||
@@ -114,101 +120,106 @@ const filterOutPassItems = (problems) => {
       (lower.includes("all") && lower.includes("alt text")) ||
       lower.includes("compression is enabled") ||
       lower.includes("dns resolution successful") ||
-      lower.includes("trusted domain extension") ||
-      lower.includes("gzip compression is enabled") ||
-      lower.includes("meta description found") ||
-      lower.includes("page title") ||
-      lower.includes("proper heading structure") ||
-      lower.includes("domain name length is optimal") ||
-      lower.includes("website is accessible")
+      lower.includes("trusted domain extension")
     ) {
       return false;
     }
+
     return true;
   });
 };
 
-const categorizeIssues = (problems) => {
-  const criticalIssues = [];
-  const warnings = [];
-  const goodChecks = [];
-  const realIssues = filterOutPassItems(problems);
+// ✅ Exact copy of ProblemsList severity
+const getSeverity = (problem) => {
+  const normalized = problem.toLowerCase();
 
-  realIssues.forEach((p) => {
-    const lower = p.toLowerCase();
-    if (
-      lower.includes("❌") ||
-      lower.includes("critical") ||
-      lower.includes("error") ||
-      lower.includes("fail") ||
-      lower.includes("unreachable") ||
-      lower.includes("not accessible") ||
-      lower.includes("no ssl") ||
-      (lower.includes("missing") && !lower.includes("⚠️"))
-    ) {
-      criticalIssues.push(p);
-      return;
-    }
-    if (
-      lower.includes("⚠️") ||
-      lower.includes("average") ||
-      lower.includes("some") ||
-      lower.includes("can be improved") ||
-      lower.includes("consider") ||
-      lower.includes("not enabled")
-    ) {
-      warnings.push(p);
-      return;
-    }
-    warnings.push(p);
-  });
+  // Check for critical issues (❌)
+  if (
+    normalized.includes("❌") ||
+    normalized.includes("critical") ||
+    normalized.includes("error") ||
+    normalized.includes("fail") ||
+    normalized.includes("unreachable") ||
+    normalized.includes("no ssl") ||
+    normalized.includes("not secure") ||
+    (normalized.includes("missing") && !normalized.includes("⚠️"))
+  ) {
+    return "Critical";
+  }
 
-  return { criticalIssues, warnings, goodChecks };
+  // Check for warnings (⚠️)
+  if (
+    normalized.includes("⚠️") ||
+    normalized.includes("average") ||
+    normalized.includes("some") ||
+    normalized.includes("can be improved") ||
+    normalized.includes("consider") ||
+    normalized.includes("missing") ||
+    normalized.includes("not enabled") ||
+    normalized.includes("could not")
+  ) {
+    return "Warning";
+  }
+
+  return "Info";
 };
 
+// ============================================
+// RECOMMENDATIONS
+// ============================================
 const getRecommendations = (problemsList) => {
   const recs = [];
-  const realIssues = filterOutPassItems(problemsList);
+  
+  if (!problemsList || problemsList.length === 0) {
+    return ["No issues found. Your website is performing well!", "Continue monitoring performance regularly."];
+  }
+
+  const realIssues = filterProblems(problemsList);
 
   if (realIssues.length === 0) {
-    recs.push("Continue monitoring performance regularly.");
-    recs.push("Maintain good UX and accessibility practices.");
-    recs.push("Keep your website's software and plugins updated.");
+    recs.push("✅ Continue monitoring performance regularly.");
+    recs.push("✅ Maintain good UX and accessibility practices.");
+    recs.push("✅ Keep your website's software and plugins updated.");
     return recs;
   }
 
   const allProblems = realIssues.join(" ").toLowerCase();
 
   if (allProblems.includes("unreachable") || allProblems.includes("not accessible")) {
-    recs.push("Check if the website is online and accessible.");
-    recs.push("Verify the URL is correct and the server is running.");
+    recs.push("🔍 Check if the website is online and accessible.");
+    recs.push("🔍 Verify the URL is correct and the server is running.");
     return recs;
   }
 
   if (allProblems.includes("no ssl") || allProblems.includes("not secure")) {
-    recs.push("Install SSL certificate and enforce HTTPS.");
-    recs.push("Redirect all HTTP traffic to HTTPS.");
+    recs.push("🔒 Install SSL certificate and enforce HTTPS.");
+    recs.push("🔒 Redirect all HTTP traffic to HTTPS.");
   }
   if (allProblems.includes("slow") || allProblems.includes("speed")) {
-    recs.push("Optimize images and enable browser caching.");
-    recs.push("Use a CDN to improve load times globally.");
+    recs.push("⚡ Optimize images and enable browser caching.");
+    recs.push("⚡ Use a CDN to improve load times globally.");
   }
   if (allProblems.includes("viewport") || allProblems.includes("mobile")) {
-    recs.push("Ensure responsive design with viewport meta tags.");
-    recs.push("Test on multiple devices and screen sizes.");
+    recs.push("📱 Ensure responsive design with viewport meta tags.");
+    recs.push("📱 Test on multiple devices and screen sizes.");
   }
   if (allProblems.includes("seo") || allProblems.includes("meta")) {
-    recs.push("Create an optimized title tag and meta description.");
-    recs.push("Use structured data where appropriate.");
+    recs.push("📝 Create an optimized title tag and meta description.");
+    recs.push("📝 Use structured data where appropriate.");
   }
   if (allProblems.includes("alt")) {
-    recs.push("Add descriptive alt text to all images.");
+    recs.push("🖼️ Add descriptive alt text to all images.");
   }
   if (allProblems.includes("security") || allProblems.includes("header")) {
-    recs.push("Implement security headers (CSP, X-Frame-Options).");
+    recs.push("🛡️ Implement security headers (CSP, X-Frame-Options).");
   }
   if (allProblems.includes("gzip") && allProblems.includes("not enabled")) {
-    recs.push("Enable GZIP compression for faster loading.");
+    recs.push("📦 Enable GZIP compression for faster loading.");
+  }
+
+  if (recs.length < 3) {
+    recs.push("📊 Regularly monitor your website performance.");
+    recs.push("🔄 Keep your website software and plugins updated.");
   }
 
   return [...new Set(recs)].slice(0, 6);
@@ -233,9 +244,19 @@ export default function ReportDownload({
   const gradeColor = getGradeColor(grade);
   const cleanedProblems = problems.map((p) => cleanProblemText(p));
 
-  const realIssues = filterOutPassItems(cleanedProblems);
-  const realIssueCount = realIssues.length;
-  const { criticalIssues, warnings, goodChecks } = categorizeIssues(cleanedProblems);
+  // ============================================
+  // ✅ USE SAME FILTER AS PROBLEMSLIST
+  // ============================================
+  const filteredProblems = filterProblems(problems);
+  const realIssueCount = filteredProblems.length;
+  
+  // ✅ USE SAME SEVERITY LOGIC AS PROBLEMSLIST
+  const criticalIssues = filteredProblems.filter(p => getSeverity(p) === "Critical");
+  const warnings = filteredProblems.filter(p => getSeverity(p) === "Warning");
+  const infoIssues = filteredProblems.filter(p => getSeverity(p) === "Info");
+
+  const criticalCount = criticalIssues.length;
+  const warningCount = warnings.length;
 
   // ============================================
   // GENERATE PDF
@@ -466,8 +487,8 @@ export default function ReportDownload({
       const coverStats = [
         { label: "Total Checks", value: problems.length },
         { label: "Issues Found", value: realIssueCount },
-        { label: "Critical", value: criticalIssues.length },
-        { label: "Warnings", value: warnings.length },
+        { label: "Critical", value: criticalCount },
+        { label: "Warnings", value: warningCount },
       ];
 
       const statStartY = badgeY + 18;
@@ -494,7 +515,7 @@ export default function ReportDownload({
       const summaryText = `This audit provides a detailed analysis of ${url} across critical performance dimensions including speed, security, SEO, and accessibility. The website achieved an overall grade of ${grade} (${gradeLabels[grade]}) with a performance score of ${finalScore} out of 100. ${
         realIssueCount === 0
           ? "All checks passed successfully - this website demonstrates exceptional performance standards across every evaluated category."
-          : `The audit identified ${realIssueCount} issue${realIssueCount === 1 ? "" : "s"} requiring attention, comprising ${criticalIssues.length} critical and ${warnings.length} warning${warnings.length === 1 ? "" : "s"} that should be addressed.`
+          : `The audit identified ${realIssueCount} issue${realIssueCount === 1 ? "" : "s"} requiring attention, comprising ${criticalCount} critical and ${warningCount} warning${warningCount === 1 ? "" : "s"} that should be addressed.`
       }`;
 
       setFont(9.5, colors.text, "normal");
@@ -523,8 +544,8 @@ export default function ReportDownload({
       const metrics = [
         ["Performance Score", `${finalScore} / 100`, gradeColorRgb, gradeSoftRgb],
         ["Total Issues", String(realIssueCount), colors.text, colors.surfaceAlt],
-        ["Critical Issues", String(criticalIssues.length), colors.danger, colors.dangerSoft],
-        ["Warnings", String(warnings.length), colors.warning, colors.warningSoft],
+        ["Critical Issues", String(criticalCount), colors.danger, colors.dangerSoft],
+        ["Warnings", String(warningCount), colors.warning, colors.warningSoft],
       ];
 
       const metricGap = 6;
@@ -758,11 +779,10 @@ export default function ReportDownload({
   };
 
   // ============================================
-  // UPLOAD PDF TO TMPFILES.ORG (CORS Friendly)
+  // UPLOAD PDF
   // ============================================
   const uploadPDF = async (base64Data, filename) => {
     try {
-      // Convert base64 to Blob
       const byteCharacters = atob(base64Data);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
@@ -771,15 +791,11 @@ export default function ReportDownload({
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: 'application/pdf' });
 
-      // Create FormData
       const formData = new FormData();
       formData.append('file', blob, filename);
 
-      // Upload to tmpfiles.org
       const response = await axios.post('https://tmpfiles.org/api/v1/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -800,7 +816,7 @@ export default function ReportDownload({
   };
 
   // ============================================
-  // SEND EMAIL WITH PDF LINK
+  // SEND EMAIL
   // ============================================
   const sendEmailWithPDFLink = async () => {
     if (!email) {
@@ -815,20 +831,16 @@ export default function ReportDownload({
     setSendStatus("Generating your report...");
 
     try {
-      // Step 1: Generate PDF
       const pdfResult = await generatePDF();
       if (!pdfResult || !pdfResult.base64Attachment) {
         throw new Error("Failed to generate PDF");
       }
 
       setSendStatus("Uploading PDF to secure server...");
-
-      // Step 2: Upload PDF
       const downloadLink = await uploadPDF(pdfResult.base64Attachment, pdfResult.filename);
 
       setSendStatus("Sending email with PDF download link...");
 
-      // Step 3: Send email with download link
       const templateParams = {
         to_email: email,
         to_name: email.split('@')[0] || 'User',
@@ -855,7 +867,6 @@ export default function ReportDownload({
       previousEmailRef.current = email;
 
       return true;
-
     } catch (error) {
       console.error("Error:", error);
       setSendStatus(`❌ Failed to send report: ${error.message || "Unknown error"}`);
@@ -867,7 +878,7 @@ export default function ReportDownload({
   };
 
   // ============================================
-  // HANDLE SEND BUTTON
+  // HANDLERS
   // ============================================
   const handleSendReport = async () => {
     if (!email) {
@@ -877,13 +888,9 @@ export default function ReportDownload({
       }
       return;
     }
-
     await sendEmailWithPDFLink();
   };
 
-  // ============================================
-  // MANUAL DOWNLOAD (Fallback)
-  // ============================================
   const handleManualDownload = async () => {
     const result = await generatePDF();
     if (!result || !result.base64Attachment) return;
@@ -897,7 +904,7 @@ export default function ReportDownload({
   };
 
   // ============================================
-  // AUTO-SEND ON EMAIL CHANGE
+  // AUTO-SEND
   // ============================================
   useEffect(() => {
     if (!email || !grade) return;
@@ -911,12 +918,10 @@ export default function ReportDownload({
   }, [email, grade]);
 
   // ============================================
-  // SCORE CALCULATION
+  // SCORE CALCULATION & RECOMMENDATIONS
   // ============================================
-  const criticalCount = criticalIssues.length;
-  const warningCount = warnings.length;
   const finalScore = typeof score === 'number' ? Math.max(0, Math.min(100, score)) : 50;
-  const recommendations = getRecommendations(cleanedProblems);
+  const recommendations = getRecommendations(problems);
 
   // ============================================
   // RENDER
@@ -924,28 +929,42 @@ export default function ReportDownload({
   return (
     <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 sm:gap-6">
-        <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-slate-950 p-5 sm:p-6 lg:p-8 text-white shadow-2xl shadow-slate-900/20 ring-1 ring-slate-900/10">
-          <span className="inline-flex rounded-full bg-sky-500/15 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-sky-200">
+        
+        {/* Left Side - White Card */}
+        <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-white p-5 sm:p-6 lg:p-8 shadow-xl ring-1 ring-slate-200">
+          <span className="inline-flex rounded-full bg-sky-500/15 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-sky-700">
             Audit summary
           </span>
-          <h1 className="mt-4 sm:mt-6 text-xl sm:text-2xl lg:text-3xl font-semibold leading-tight">
+          <h1 className="mt-4 sm:mt-6 text-xl sm:text-2xl lg:text-3xl font-semibold leading-tight text-slate-900">
             Export a beautiful website audit report
           </h1>
-          <p className="mt-3 sm:mt-4 text-xs sm:text-sm leading-5 sm:leading-6 text-slate-300">
+          <p className="mt-3 sm:mt-4 text-xs sm:text-sm leading-5 sm:leading-6 text-slate-500">
             Create a ready-to-share PDF with your website grade, issue breakdown, and recommendations in one polished package.
           </p>
 
           <div className="mt-6 sm:mt-8 grid gap-3 sm:gap-4">
-            <div className="rounded-2xl sm:rounded-3xl bg-slate-900/80 p-4 sm:p-5 ring-1 ring-white/10">
+            <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-4 sm:p-5 ring-1 ring-slate-200">
               <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-slate-400">
                 Overall grade
               </p>
               <div className="mt-3 sm:mt-4 flex items-center gap-3 sm:gap-4">
-                <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl sm:rounded-3xl bg-gradient-to-br from-sky-500 to-indigo-500 text-2xl sm:text-3xl font-bold text-white shadow-lg shadow-sky-500/30">
+                <div className={`flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl sm:rounded-3xl text-2xl sm:text-3xl font-bold text-white shadow-lg ${
+                  grade === 'A' ? 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/30' :
+                  grade === 'B' ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30' :
+                  grade === 'C' ? 'bg-gradient-to-br from-yellow-500 to-yellow-600 shadow-yellow-500/30' :
+                  grade === 'D' ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-orange-500/30' :
+                  'bg-gradient-to-br from-red-500 to-red-600 shadow-red-500/30'
+                }`}>
                   {grade}
                 </div>
                 <div>
-                  <p className="text-base sm:text-lg font-semibold text-white">
+                  <p className={`text-base sm:text-lg font-semibold ${
+                    grade === 'A' ? 'text-green-600' :
+                    grade === 'B' ? 'text-blue-600' :
+                    grade === 'C' ? 'text-yellow-600' :
+                    grade === 'D' ? 'text-orange-600' :
+                    'text-red-600'
+                  }`}>
                     {gradeColor.label}
                   </p>
                   <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-slate-400">
@@ -956,24 +975,24 @@ export default function ReportDownload({
             </div>
 
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-900/80 p-3 sm:p-4 text-center ring-1 ring-white/5">
-                <p className="text-xl sm:text-2xl font-semibold text-white">
+              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center ring-1 ring-slate-200">
+                <p className="text-xl sm:text-2xl font-semibold text-slate-900">
                   {problems.length}
                 </p>
                 <p className="mt-1 sm:mt-2 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
                   Total checks
                 </p>
               </div>
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-900/80 p-3 sm:p-4 text-center ring-1 ring-white/5">
-                <p className="text-xl sm:text-2xl font-semibold text-red-400">
+              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center ring-1 ring-slate-200">
+                <p className="text-xl sm:text-2xl font-semibold text-red-600">
                   {criticalCount}
                 </p>
                 <p className="mt-1 sm:mt-2 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
                   Critical
                 </p>
               </div>
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-900/80 p-3 sm:p-4 text-center ring-1 ring-white/5">
-                <p className="text-xl sm:text-2xl font-semibold text-emerald-400">
+              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-center ring-1 ring-slate-200">
+                <p className="text-xl sm:text-2xl font-semibold text-amber-600">
                   {realIssueCount === 0 ? "0" : realIssueCount}
                 </p>
                 <p className="mt-1 sm:mt-2 text-[8px] sm:text-xs uppercase tracking-[0.2em] text-slate-400">
@@ -1002,25 +1021,26 @@ export default function ReportDownload({
               )}
             </button>
 
-            {/* <button
+            <button
               onClick={handleManualDownload}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl sm:rounded-3xl bg-slate-700 px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-white transition hover:bg-slate-600"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl sm:rounded-3xl bg-slate-100 px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
             >
               ⬇️ Download PDF Only
-            </button> */}
+            </button>
           </div>
 
           {sendStatus && (
-            <div className={`mt-3 p-3 rounded-xl text-sm ${
-              sendStatus.includes('✅') ? 'bg-emerald-500/20 text-emerald-200' :
-              sendStatus.includes('❌') ? 'bg-red-500/20 text-red-200' :
-              'bg-slate-700/50 text-slate-300'
+            <div className={`mt-3 p-3 rounded-xl text-xs sm:text-sm ${
+              sendStatus.includes('✅') ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
+              sendStatus.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' :
+              'bg-slate-50 text-slate-600 border border-slate-100'
             }`}>
               {sendStatus}
             </div>
           )}
         </div>
 
+        {/* Right Side - White Card */}
         <div className="space-y-4 sm:space-y-6">
           <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-white p-4 sm:p-5 lg:p-6 shadow-xl ring-1 ring-slate-200">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
@@ -1032,7 +1052,13 @@ export default function ReportDownload({
                   {url}
                 </p>
               </div>
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-slate-700 whitespace-nowrap">
+              <div className={`rounded-2xl sm:rounded-3xl px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold whitespace-nowrap ${
+                grade === 'A' ? 'bg-green-50 text-green-700' :
+                grade === 'B' ? 'bg-blue-50 text-blue-700' :
+                grade === 'C' ? 'bg-yellow-50 text-yellow-700' :
+                grade === 'D' ? 'bg-orange-50 text-orange-700' :
+                'bg-red-50 text-red-700'
+              }`}>
                 {gradeColor.label}
               </div>
             </div>
@@ -1065,51 +1091,31 @@ export default function ReportDownload({
             </div>
           </div>
 
+          {/* ✅ Recommendations - Now Showing */}
           <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-white p-4 sm:p-5 lg:p-6 shadow-xl ring-1 ring-slate-200">
-            <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-slate-400">
-              Recommendations
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-slate-400">
+                Recommendations
+              </p>
+              <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                {recommendations.length} tips
+              </span>
+            </div>
             <ul className="mt-3 sm:mt-4 space-y-2 sm:space-y-3">
-              {recommendations.slice(0, 4).map((rec, idx) => (
-                <li key={idx} className="flex gap-2 sm:gap-3 rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-xs sm:text-sm text-slate-700">
-                  <span className="mt-0.5 inline-flex h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-sky-100 text-sky-700 text-xs sm:text-sm">
-                    {idx + 1}
-                  </span>
-                  <span className="leading-relaxed">{rec}</span>
-                </li>
-              ))}
+              {recommendations.slice(0, 4).map((rec, idx) => {
+                const emoji = rec.match(/^[^\s]+/)?.[0] || '•';
+                const text = rec.replace(/^[^\s]+\s/, '');
+                return (
+                  <li key={idx} className="flex gap-2 sm:gap-3 rounded-2xl sm:rounded-3xl bg-slate-50 p-3 sm:p-4 text-xs sm:text-sm text-slate-700">
+                    <span className="mt-0.5 text-base flex-shrink-0">{emoji}</span>
+                    <span className="leading-relaxed">{text}</span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
-      </div>
 
-      <div className="rounded-2xl sm:rounded-3xl lg:rounded-4xl bg-slate-50 p-4 sm:p-5 lg:p-6 shadow-inner ring-1 ring-slate-200">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
-          <h2 className="text-base sm:text-lg font-semibold text-slate-900">
-            Audit preview
-          </h2>
-          <span className="rounded-full bg-slate-100 px-2.5 sm:px-3 py-1 text-[9px] sm:text-xs uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
-            Live data
-          </span>
-        </div>
-        <div className="mt-4 sm:mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-          <div className="rounded-2xl sm:rounded-3xl bg-white p-3 sm:p-4 text-center shadow-sm">
-            <p className="text-[10px] sm:text-sm text-slate-500">Total Checks</p>
-            <p className="mt-1 sm:mt-2 text-lg sm:text-xl font-semibold text-slate-900">{problems.length}</p>
-          </div>
-          <div className="rounded-2xl sm:rounded-3xl bg-white p-3 sm:p-4 text-center shadow-sm">
-            <p className="text-[10px] sm:text-sm text-slate-500">Issues</p>
-            <p className="mt-1 sm:mt-2 text-lg sm:text-xl font-semibold text-red-600">{realIssueCount}</p>
-          </div>
-          <div className="rounded-2xl sm:rounded-3xl bg-white p-3 sm:p-4 text-center shadow-sm">
-            <p className="text-[10px] sm:text-sm text-slate-500">Critical</p>
-            <p className="mt-1 sm:mt-2 text-lg sm:text-xl font-semibold text-red-600">{criticalCount}</p>
-          </div>
-          <div className="rounded-2xl sm:rounded-3xl bg-white p-3 sm:p-4 text-center shadow-sm">
-            <p className="text-[10px] sm:text-sm text-slate-500">Score</p>
-            <p className="mt-1 sm:mt-2 text-lg sm:text-xl font-semibold text-slate-900">{finalScore}/100</p>
-          </div>
-        </div>
       </div>
 
       {/* Email Sent Modal */}

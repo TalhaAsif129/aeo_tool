@@ -10,6 +10,7 @@ const GradeCard = ({ grade }) => {
           ring: "ring-green-200",
           bgOuter: "bg-green-50",
           text: "text-green-600",
+          label: "Excellent!",
         };
       case "B":
         return {
@@ -17,6 +18,7 @@ const GradeCard = ({ grade }) => {
           ring: "ring-blue-200",
           bgOuter: "bg-blue-50",
           text: "text-blue-600",
+          label: "Good!",
         };
       case "C":
         return {
@@ -24,6 +26,7 @@ const GradeCard = ({ grade }) => {
           ring: "ring-yellow-200",
           bgOuter: "bg-yellow-50",
           text: "text-yellow-600",
+          label: "Average",
         };
       case "D":
         return {
@@ -31,6 +34,7 @@ const GradeCard = ({ grade }) => {
           ring: "ring-orange-200",
           bgOuter: "bg-orange-50",
           text: "text-orange-600",
+          label: "Needs Improvement",
         };
       case "F":
         return {
@@ -38,6 +42,7 @@ const GradeCard = ({ grade }) => {
           ring: "ring-red-200",
           bgOuter: "bg-red-50",
           text: "text-red-600",
+          label: "Poor",
         };
       default:
         return {
@@ -45,6 +50,7 @@ const GradeCard = ({ grade }) => {
           ring: "ring-gray-200",
           bgOuter: "bg-gray-50",
           text: "text-gray-600",
+          label: "Unknown",
         };
     }
   };
@@ -52,34 +58,33 @@ const GradeCard = ({ grade }) => {
   const styles = getGradeStyles(grade);
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Animated Circle - Continuous Zoom In/Out */}
-      <div className="mx-auto mt-6">
-        <div
-          className={`relative flex h-40 w-40 items-center justify-center rounded-full ${styles.bgOuter} shadow-inner ring-8 ${styles.ring} animate-zoom`}
-        >
+    <div className="w-full">
+      <div className="flex flex-col items-center justify-center w-full py-2 sm:py-3">
+        
+        {/* ✅ Chhota Circle */}
+        <div className="relative">
           <div
-            className={`flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br ${styles.bg} text-white shadow-lg`}
+            className={`relative flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 items-center justify-center rounded-full ${styles.bgOuter} shadow-inner ring-4 sm:ring-4 ${styles.ring} animate-zoom`}
           >
-            <span className="text-5xl font-bold">{grade}</span>
+            <div
+              className={`flex h-[68px] w-[68px] sm:h-[76px] sm:w-[76px] md:h-[84px] md:w-[84px] items-center justify-center rounded-full bg-gradient-to-br ${styles.bg} text-white shadow-lg`}
+            >
+              <span className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                {grade}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Grade label */}
-      <div className="mt-4 text-center">
-        <h3 className={`text-lg font-semibold mt-5 ${styles.text}`}>
-          {grade === "A"
-            ? "Excellent!"
-            : grade === "B"
-              ? "Good!"
-              : grade === "C"
-                ? "Average"
-                : grade === "D"
-                  ? "Needs Improvement"
-                  : "Poor"}
-        </h3>
-        <p className="text-sm text-gray-500 mt-10">Performance Grade</p>
+        {/* ✅ Chhota Label */}
+        <div className="mt-2 sm:mt-3 text-center">
+          <h3 className={`text-base sm:text-lg md:text-xl font-semibold ${styles.text}`}>
+            {styles.label}
+          </h3>
+          <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 sm:mt-1">
+            Performance Grade
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 ﻿// ============================================
-// ProblemsList.jsx - Only Shows Real Issues (Pass items are hidden)
+// ProblemsList.jsx - Prominent Version
 // ============================================
 
 const getSeverity = (problem) => {
@@ -75,18 +75,12 @@ const getFixRecommendation = (problem) => {
   if (lower.includes("no ssl") || lower.includes("not secure")) {
     return "Install SSL certificate and enforce HTTPS redirects.";
   }
-  if (
-    lower.includes("ssl certificate is valid") ||
-    lower.includes("ssl enabled")
-  ) {
+  if (lower.includes("ssl certificate is valid") || lower.includes("ssl enabled")) {
     return "✅ SSL is properly configured. Keep certificates updated.";
   }
 
   // ---- Speed Issues ----
-  if (
-    lower.includes("slow") ||
-    (lower.includes("loading time") && lower.includes("slow"))
-  ) {
+  if (lower.includes("slow") || (lower.includes("loading time") && lower.includes("slow"))) {
     return "Optimize images, enable caching, and use a CDN.";
   }
   if (lower.includes("average loading time")) {
@@ -147,7 +141,7 @@ const getFixRecommendation = (problem) => {
     return "✅ DNS is properly configured.";
   }
 
-  // ---- Domain Quality Issues (NEW) ----
+  // ---- Domain Quality Issues ----
   if (lower.includes("uncommon domain extension")) {
     return "Consider using a more common domain extension (.com, .org, .net).";
   }
@@ -164,7 +158,7 @@ const getFixRecommendation = (problem) => {
     return "Consider removing numbers for a more professional domain.";
   }
 
-  // ---- Estimated Metrics (NEW) ----
+  // ---- Estimated Metrics ----
   if (lower.includes("estimated")) {
     return "For accurate results, use Google PageSpeed Insights or GTmetrix.";
   }
@@ -233,63 +227,102 @@ export default function ProblemsList({ problems }) {
   });
 
   return (
-    <section className="mt-6 rounded-4xl border border-slate-200 bg-white p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.35)]">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm uppercase tracking-[0.24em] text-slate-400">
-            Issue roundup
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-            Problems to fix
-          </h2>
-        </div>
-        <div className="rounded-full bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm">
-          {filteredProblems.length} items found
+    <div className="w-full bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+      
+      {/* ✅ Prominent Header - Gradient */}
+      <div className="bg-gradient-to-r from-rose-600 to-orange-500 px-4 sm:px-6 py-4 sm:py-5">
+        <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shadow-lg flex-shrink-0">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-white">Issues to Fix</h2>
+              <p className="text-xs sm:text-sm text-rose-100 hidden xs:block">Detailed breakdown of all detected issues</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white text-sm font-bold shadow-lg">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+              {filteredProblems.length} {filteredProblems.length === 1 ? 'issue' : 'issues'}
+            </span>
+          </div>
         </div>
       </div>
 
-      {filteredProblems.length === 0 ? (
-        <div className="mt-6 rounded-3xl bg-emerald-50 px-6 py-5 text-emerald-700 shadow-sm">
-          <p className="text-base font-semibold">🎉 No issues detected!</p>
-          <p className="mt-1 text-sm text-emerald-600">
-            All checks passed. Your website is performing well!
-          </p>
-        </div>
-      ) : (
-        <ul className="mt-6 space-y-4">
-          {filteredProblems.map((problem, index) => {
-            const severity = getSeverity(problem);
-            const fixRecommendation = getFixRecommendation(problem);
+      {/* ✅ Body - Prominent Cards */}
+      <div className="p-4 sm:p-6 lg:p-8">
+        {filteredProblems.length === 0 ? (
+          <div className="text-center py-12 sm:py-16">
+            <div className="inline-flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4 shadow-lg shadow-emerald-200">
+              <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-800">🎉 No Issues Detected!</h3>
+            <p className="mt-2 text-sm sm:text-base text-slate-500">All checks passed. Your website is performing well!</p>
+          </div>
+        ) : (
+          <div className="space-y-4 sm:space-y-5">
+            {filteredProblems.map((problem, index) => {
+              const severity = getSeverity(problem);
+              const fixRecommendation = getFixRecommendation(problem);
 
-            return (
-              <li
-                key={index}
-                className="grid gap-4 rounded-3xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-[auto_1fr_auto]"
-              >
+              return (
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-3xl text-lg ${severity.tone}`}
+                  key={index}
+                  className={`group relative overflow-hidden rounded-2xl border-2 p-5 sm:p-6 transition-all duration-300 hover:shadow-lg ${
+                    severity.label === "Critical" 
+                      ? "border-rose-200 bg-rose-50/50 hover:bg-rose-50 hover:border-rose-300" 
+                      : severity.label === "Warning" 
+                        ? "border-amber-200 bg-amber-50/50 hover:bg-amber-50 hover:border-amber-300"
+                        : "border-sky-200 bg-sky-50/50 hover:bg-sky-50 hover:border-sky-300"
+                  }`}
                 >
-                  {severity.icon}
+                  {/* Left Accent Bar - Thicker & Prominent */}
+                  <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${
+                    severity.label === "Critical" 
+                      ? "bg-rose-500" 
+                      : severity.label === "Warning" 
+                        ? "bg-amber-500"
+                        : "bg-sky-500"
+                  } group-hover:w-2 transition-all duration-300`}></div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-5 pl-4">
+                    
+                    {/* Icon - Larger & Prominent */}
+                    <div className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl text-xl sm:text-2xl ${severity.tone} flex-shrink-0 shadow-md group-hover:scale-105 transition-transform duration-300`}>
+                      {severity.icon}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                        <p className="text-sm sm:text-base font-semibold text-slate-900 break-words">
+                          {problem}
+                        </p>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${severity.tone} flex-shrink-0 shadow-sm`}>
+                          {severity.label}
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        <span className="font-semibold text-slate-700">💡 Fix:</span> {fixRecommendation}
+                      </p>
+                    </div>
+
+                    {/* Issue Number - Prominent */}
+                    <div className="hidden sm:flex items-center justify-center h-8 w-8 rounded-full bg-slate-200/50 text-slate-400 text-xs font-bold flex-shrink-0 group-hover:bg-slate-200 transition-colors">
+                      #{index + 1}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-slate-900">{problem}</p>
-                  <p className="mt-2 text-sm text-slate-500">
-                    <span className="font-medium text-slate-600">
-                      Recommended fix:
-                    </span>{" "}
-                    {fixRecommendation}
-                  </p>
-                </div>
-                <span
-                  className={`mt-1 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-full px-3 text-xs font-semibold ${severity.tone}`}
-                >
-                  {severity.label}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
