@@ -59,29 +59,30 @@ const GradeCard = ({ grade }) => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col items-center justify-center w-full py-2 sm:py-3">
+      {/* ✅ Horizontal Layout - Gap Kam */}
+      <div className="flex items-center  gap-4 sm:gap-3 md:gap-4 py-1 sm:py-2">
         
-        {/* ✅ Chhota Circle */}
-        <div className="relative">
+        {/* Circle - Chhota */}
+        <div className="relative flex-shrink-0">
           <div
-            className={`relative flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 items-center justify-center rounded-full ${styles.bgOuter} shadow-inner ring-4 sm:ring-4 ${styles.ring} animate-zoom`}
+            className={`relative flex h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 items-center justify-center rounded-full ${styles.bgOuter} shadow-inner ring-4 sm:ring-4 ${styles.ring} animate-zoom`}
           >
             <div
-              className={`flex h-[68px] w-[68px] sm:h-[76px] sm:w-[76px] md:h-[84px] md:w-[84px] items-center justify-center rounded-full bg-gradient-to-br ${styles.bg} text-white shadow-lg`}
+              className={`flex h-10 w-10 sm:h-12 sm:w-12 md:h-[52px] md:w-[52px] items-center justify-center rounded-full bg-gradient-to-br ${styles.bg} text-white shadow-lg`}
             >
-              <span className="text-3xl sm:text-4xl md:text-5xl font-bold">
+              <span className="text-xl sm:text-2xl md:text-3xl font-bold">
                 {grade}
               </span>
             </div>
           </div>
         </div>
 
-        {/* ✅ Chhota Label */}
-        <div className="mt-2 sm:mt-3 text-center">
-          <h3 className={`text-base sm:text-lg md:text-xl font-semibold ${styles.text}`}>
+        {/* Label - Right Side */}
+        <div className="flex flex-col">
+          <h3 className={`text-sm sm:text-base md:text-lg font-semibold ${styles.text}`}>
             {styles.label}
           </h3>
-          <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 sm:mt-1">
+          <p className="text-[8px] sm:text-[10px] text-gray-500">
             Performance Grade
           </p>
         </div>

@@ -40,8 +40,8 @@ export default function UrlForm({ onSubmit, loading }) {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           className="w-full h-12 sm:h-14 pl-10 sm:pl-14 pr-0 rounded-full border-2 bg-white text-sm sm:text-base text-slate-900 shadow-sm outline-none transition-all duration-200 placeholder:text-slate-400 focus:shadow-md hover:shadow-md
-          border-sky-400
-          group-hover:border-sky-400"
+          border-sky-500
+          group-hover:border-sky-500"
           required
         />
 

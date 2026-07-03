@@ -122,22 +122,15 @@ function App() {
         <UrlForm onSubmit={handleCheck} loading={loading} />
 
         {/* ============================================
-            GRADE + STATS - Professional Card
-            ============================================ */}
-        {/* ============================================
-    GRADE + STATS - Professional Card
-    ============================================ */}
-        {/* ============================================
-    GRADE + STATS - Prominent Card
+    GRADE + STATS - Mobile: Grade Upper, LG/MD: Ek Line
     ============================================ */}
         {grade && (
           <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
-            {/* ✅ Prominent Header */}
-            <div className="bg-gradient-to-r from-sky-600 to-indigo-600 px-4 sm:px-6 py-4 sm:py-5">
+            {/* Header - Simple */}
+            <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 bg-white">
               <div className="flex items-center justify-between gap-3">
-                {/* Left: Icon + Title */}
                 <div className="flex items-center gap-3 flex-shrink-0">
-                  <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shadow-lg flex-shrink-0">
+                  <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 shadow-sm flex-shrink-0">
                     <svg
                       className="w-5 h-5 sm:w-6 sm:h-6"
                       fill="none"
@@ -153,19 +146,17 @@ function App() {
                     </svg>
                   </div>
                   <div>
-                    <h2 className="text-base sm:text-lg font-bold text-white">
+                    <h2 className="text-base sm:text-lg font-bold text-slate-800">
                       Audit Results
                     </h2>
-                    <p className="text-xs sm:text-sm text-sky-100 hidden xs:block">
+                    <p className="text-xs sm:text-sm text-slate-500 hidden xs:block">
                       Complete overview of your website performance
                     </p>
                   </div>
                 </div>
-
-                {/* ✅ Right: Grade Badge - White Version */}
                 <div className="hidden md:flex flex-shrink-0">
                   <span
-                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold shadow-lg ${
+                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold shadow-sm bg-rose-50 ${
                       grade === "A"
                         ? "bg-green-100 text-green-700"
                         : grade === "B"
@@ -174,111 +165,106 @@ function App() {
                             ? "bg-yellow-100 text-yellow-700"
                             : grade === "D"
                               ? "bg-orange-100 text-orange-700"
-                              : "bg-red-100 text-red-700"
+                              : "bg-red-100 text-rose-700"
                     }`}
                   >
-                    <span className="w-2 h-2 rounded-full bg-current animate-pulse"></span>
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
                     Grade {grade}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* ✅ Body with Prominent Stats */}
-            <div className="p-4 sm:p-6 lg:p-8">
-              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-                {/* Left Side: Grade Circle */}
-                <div className="w-full lg:w-2/5 flex justify-center">
+            {/* ✅ Body - Mobile: Grade Upper, LG/MD: Ek Line */}
+            <div className="p-3 sm:p-4 md:p-6">
+              {/* Mobile: Grade Upper, LG/MD: Grade Left */}
+              <div className="flex flex-col md:flex-row md:items-center justify-around gap-4 md:gap-6 lg:gap-8 xl:gap-10">
+                {/* Grade Circle - Upper on Mobile, Left on LG/MD */}
+                <div className="flex justify-center md:flex-shrink-0">
                   <GradeCard grade={grade} />
                 </div>
 
-                {/* Divider Line (Desktop) */}
-                <div className="hidden lg:block w-px h-72 bg-gradient-to-b from-transparent via-slate-500 to-transparent"></div>
-
-                {/* Right Side: Quick Stats - Larger & Prominent */}
-                <div className="w-full lg:w-3/5">
-                  <div className="grid grid-cols-2 gap-4 sm:gap-5">
-                    {/* Stat 1: Total Checks */}
-                    <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-2xl p-4 sm:p-5 text-center border-2 border-slate-100 hover:border-sky-300 hover:shadow-md transition-all duration-300 group">
-                      <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 group-hover:text-sky-600 transition-colors">
-                        {problems.length}
-                      </p>
-                      <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1 uppercase tracking-wide">
-                        Total Checks
-                      </p>
-                      <div className="mt-3 w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                        <div className="h-full w-full bg-gradient-to-r from-sky-400 to-sky-600 rounded-full"></div>
-                      </div>
+                {/* Stats - Below Grade on Mobile, Right on LG/MD */}
+                <div className="flex flex-wrap items-center justify-around gap-4 sm:gap-5 md:gap-6 lg:gap-8 xl:gap-10">
+                  {/* Performance Score */}
+                  <div className="flex flex-col items-center min-w-[60px] sm:min-w-[70px]">
+                    <p className="text-lg sm:text-xl md:text-2xl font-extrabold text-sky-600">
+                      {score}/100
+                    </p>
+                    <p className="text-[8px] xs:text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-wide text-center">
+                      Score
+                    </p>
+                    <div className="mt-1 w-full max-w-[40px] sm:max-w-[50px] h-1 bg-slate-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-sky-500 to-indigo-600"
+                        style={{ width: `${score}%` }}
+                      ></div>
                     </div>
-
-                    {/* Stat 2: Issues Found */}
-                    <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-2xl p-4 sm:p-5 text-center border-2 border-slate-100 hover:border-amber-300 hover:shadow-md transition-all duration-300 group">
-                      <p
-                        className={`text-3xl sm:text-4xl font-extrabold ${realIssueCount === 0 ? "text-emerald-600" : "text-amber-600"} group-hover:scale-105 transition-transform`}
-                      >
-                        {realIssueCount}
-                      </p>
-                      <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1 uppercase tracking-wide">
-                        Issues Found
-                      </p>
-                      <div className="mt-3 w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${realIssueCount === 0 ? "w-full bg-emerald-500" : "w-1/2 bg-amber-500"}`}
-                        ></div>
-                      </div>
+                  </div>
+                  {/* Total Checks */}
+                  <div className="flex flex-col items-center min-w-[60px] sm:min-w-[70px]">
+                    <p className="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900">
+                      {problems.length}
+                    </p>
+                    <p className="text-[8px] xs:text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-wide text-center">
+                      Total Checks
+                    </p>
+                    <div className="mt-1 w-full max-w-[40px] sm:max-w-[50px] h-1 bg-slate-200 rounded-full overflow-hidden">
+                      <div className="h-full w-full bg-sky-500 rounded-full"></div>
                     </div>
+                  </div>
 
-                    {/* Stat 3: Performance Score */}
-                    <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-2xl p-4 sm:p-5 text-center border-2 border-slate-100 hover:border-sky-300 hover:shadow-md transition-all duration-300 group">
-                      <p className="text-3xl sm:text-4xl font-extrabold text-sky-600 group-hover:scale-105 transition-transform">
-                        {score}/100
-                      </p>
-                      <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1 uppercase tracking-wide">
-                        Performance Score
-                      </p>
-                      <div className="mt-3 w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full bg-gradient-to-r from-sky-500 to-indigo-600`}
-                          style={{ width: `${score}%` }}
-                        ></div>
-                      </div>
+                  {/* Issues Found */}
+                  <div className="flex flex-col items-center min-w-[60px] sm:min-w-[70px]">
+                    <p
+                      className={`text-lg sm:text-xl md:text-2xl font-extrabold ${realIssueCount === 0 ? "text-emerald-600" : "text-amber-600"}`}
+                    >
+                      {realIssueCount}
+                    </p>
+                    <p className="text-[8px] xs:text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-wide text-center">
+                      Issues
+                    </p>
+                    <div className="mt-1 w-full max-w-[40px] sm:max-w-[50px] h-1 bg-slate-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${realIssueCount === 0 ? "w-full bg-emerald-500" : "w-1/2 bg-amber-500"}`}
+                      ></div>
                     </div>
+                  </div>
 
-                    {/* Stat 4: Overall Grade */}
-                    <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-2xl p-4 sm:p-5 text-center border-2 border-slate-100 hover:border-red-300 hover:shadow-md transition-all duration-300 group">
-                      <p
-                        className={`text-3xl sm:text-4xl font-extrabold ${
+                  {/* Overall Grade */}
+                  <div className="flex flex-col items-center min-w-[40px] sm:min-w-[50px]">
+                    <p
+                      className={`text-lg sm:text-xl md:text-2xl font-extrabold ${
+                        grade === "A"
+                          ? "text-green-600"
+                          : grade === "B"
+                            ? "text-blue-600"
+                            : grade === "C"
+                              ? "text-yellow-600"
+                              : grade === "D"
+                                ? "text-orange-600"
+                                : "text-red-600"
+                      }`}
+                    >
+                      {grade}
+                    </p>
+                    <p className="text-[8px] xs:text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-wide text-center">
+                      Grade
+                    </p>
+                    <div className="mt-1 w-full max-w-[40px] sm:max-w-[50px] h-1 bg-slate-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${
                           grade === "A"
-                            ? "text-green-600"
+                            ? "w-full bg-green-500"
                             : grade === "B"
-                              ? "text-blue-600"
+                              ? "w-3/4 bg-blue-500"
                               : grade === "C"
-                                ? "text-yellow-600"
+                                ? "w-1/2 bg-yellow-500"
                                 : grade === "D"
-                                  ? "text-orange-600"
-                                  : "text-red-600"
-                        } group-hover:scale-105 transition-transform`}
-                      >
-                        {grade}
-                      </p>
-                      <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1 uppercase tracking-wide">
-                        Overall Grade
-                      </p>
-                      <div className="mt-3 w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${
-                            grade === "A"
-                              ? "w-full bg-green-500"
-                              : grade === "B"
-                                ? "w-3/4 bg-blue-500"
-                                : grade === "C"
-                                  ? "w-1/2 bg-yellow-500"
-                                  : grade === "D"
-                                    ? "w-1/4 bg-orange-500"
-                                    : "w-1/6 bg-red-500"
-                          }`}
-                        ></div>
-                      </div>
+                                  ? "w-1/4 bg-orange-500"
+                                  : "w-1/6 bg-red-500"
+                        }`}
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -315,7 +301,7 @@ function App() {
         {/* ============================================
             EMAIL GATE (4th - Last) - Get Full Report
             ============================================ */}
-        {grade && (
+        {/* {grade && (
           <div className="mt-6" ref={emailGateRef}>
             {!showEmailGate ? (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
@@ -351,7 +337,7 @@ function App() {
               </div>
             )}
           </div>
-        )}
+        )} */}
 
         {/* ============================================
             NO AUDIT STATE
@@ -369,7 +355,7 @@ function App() {
         {/* ============================================
             FOOTER
             ============================================ */}
-        <footer className="mt-28 text-center text-slate-400 text-sm border-t border-slate-200 pt-8">
+        <footer className="mt-50 text-center text-slate-400 text-sm border-t border-slate-200 pt-8">
           <p>
             © 2026 AuditPro — Free Website Auditor. All checks are simulated for
             demo purposes.

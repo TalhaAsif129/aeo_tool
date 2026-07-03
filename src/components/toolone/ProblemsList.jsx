@@ -229,23 +229,26 @@ export default function ProblemsList({ problems }) {
   return (
     <div className="w-full bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
       
-      {/* ✅ Prominent Header - Gradient */}
-      <div className="bg-gradient-to-r from-rose-600 to-orange-500 px-4 sm:px-6 py-4 sm:py-5">
-        <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shadow-lg flex-shrink-0">
+      {/* ✅ Header - Same as Grade Section */}
+      <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 bg-white">
+        <div className="flex items-center justify-between gap-3">
+          {/* Left: Icon + Title */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 shadow-sm flex-shrink-0">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-white">Issues to Fix</h2>
-              <p className="text-xs sm:text-sm text-rose-100 hidden xs:block">Detailed breakdown of all detected issues</p>
+              <h2 className="text-base sm:text-lg font-bold text-slate-800">Issues to Fix</h2>
+              <p className="text-xs sm:text-sm text-slate-500 hidden xs:block">Detailed breakdown of all detected issues</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white text-sm font-bold shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+
+          {/* Right: Issues Badge */}
+          <div className="hidden md:flex flex-shrink-0">
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold shadow-sm bg-rose-50 text-rose-700">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
               {filteredProblems.length} {filteredProblems.length === 1 ? 'issue' : 'issues'}
             </span>
           </div>
